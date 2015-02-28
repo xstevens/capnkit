@@ -2,7 +2,10 @@
 Copyright 2015 (c) Simple Finance Technology Corp.
 Authors: Xavier Stevens <xavier@simple.com>
 """
-from setuptools import setup
+try:
+    from setuptools import setup
+except ImportError:
+    from distutils.core import setup
 
 meta = dict(
     name='capnkit',
@@ -24,6 +27,7 @@ meta = dict(
         'scikit-learn>=0.15.2',
     ],
     package_data={'capnkit': ['*.capnp']},
+    zip_safe=False,
 )
 
 setup(**meta)
