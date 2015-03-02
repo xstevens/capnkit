@@ -10,5 +10,5 @@ persistance and to be relatively efficient in doing so.
 """
 __version__ = '0.0.1'
 
-from .util import load
-from .util import dump
+from util import load
+from util import dump

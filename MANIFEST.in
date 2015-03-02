@@ -1,0 +1,5 @@
+include *.md
+include *.txt
+
+recursive-include capnkit *.py
+recursive-include capnkit *.capnp

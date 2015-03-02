@@ -4,25 +4,27 @@ import capnp
 import feature_extraction_capnp
 import classification_capnp
 
-from .feature_extraction import *
-from .classification import *
+from feature_extraction import _capnp_to_count_vectorizer, _capnp_to_tfidf_transformer, _count_vectorizer_to_capnp, _tfidf_transformer_to_capnp
+from classification import _capnp_to_logisticreg, _logisticreg_to_capnp
 
-def load_msg(cpnpc, filename):
+from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
+from sklearn.linear_model import LogisticRegression
+
+def _load_msg(cpnpc, filename):
     with gzip.open(filename, mode='rb') as f:
         return cpnpc.read(f)
     return None
 
 
-def load(cpnpc, filename):
-    msg = load_msg(cpnpc, filename)
-    if isinstance(msg, feature_extraction_capnp.NgramVectorizer.Reader):
-        return _capnp_to_count_vectorizer(msg)
-    elif isinstance(msg, feature_extraction_capnp.TfidfTransformer.Reader):
-        return _capnp_to_tfidf_transformer(msg)
-    elif isinstance(msg, classification_capnp.LogisticRegression.Reader):
-        return _capnp_to_logisticreg(msg)
+def load(typ, filename):
+    if CountVectorizer == typ:
+        return _capnp_to_count_vectorizer(_load_msg(feature_extraction_capnp.NgramVectorizer, filename))
+    elif TfidfTransformer == typ:
+        return _capnp_to_tfidf_transformer(_load_msg(feature_extraction_capnp.TfidfTransformer, filename))
+    elif LogisticRegression == typ:
+        return _capnp_to_logisticreg(_load_msg(classification_capnp.LogisticRegression, filename))
     else:
-        raise Exception('Unknown message type: %s' % cpnpc)
+        raise Exception('Cannot deserialize type: %s' % str(typ))
 
 
 def dump(obj, filename):
